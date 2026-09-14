@@ -1,0 +1,23 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+import Button from '../components/ui/Button.astro';
+---
+
+<MarketingLayout
+  title="Page not found"
+  description="The page you requested does not exist on YTSchool."
+  canonical="/404"
+  noindex={true}
+>
+  <section class="mx-auto max-w-xl px-4 py-24 text-center">
+    <p class="text-sm font-bold uppercase tracking-widest text-foreground">404</p>
+    <h1 class="mt-3 font-heading text-4xl font-semibold text-foreground">Page not found</h1>
+    <p class="mt-4 text-muted-foreground">
+      That URL is not part of the marketing site. Try the home page or blog.
+    </p>
+    <div class="mt-8 flex justify-center gap-3">
+      <Button href="/" variant="primary">Home</Button>
+      <Button href="/blog" variant="secondary">Blog</Button>
+    </div>
+  </section>
+</MarketingLayout>

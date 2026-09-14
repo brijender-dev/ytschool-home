@@ -1,0 +1,95 @@
+/**
+ * Spacing & layout tokens — Design system grid, container widths, section padding, gap scale
+ */
+
+:root {
+  --spacing-0: 0;
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-7: 2rem;
+  --spacing-8: 3rem;
+  --spacing-9: 5rem;
+  --spacing-10: 8rem;
+  --spacing-11: 12rem;
+  --spacing-12: 4rem;
+  --spacing-16: 6rem;
+  --spacing-20: 8rem;
+
+  --container-narrow: 38rem;
+  --container-narrow-lg: 42rem;
+  --container-narrow-xl: 48rem;
+  --container-wide: 56rem;
+  --container-max: 80rem;
+
+  --section-py: var(--spacing-16);
+  --section-px: var(--spacing-8);
+  --section-py-sm: var(--spacing-8);
+  --section-py-lg: var(--spacing-20);
+
+  --grid-gap-xs: var(--spacing-2);
+  --grid-gap-sm: var(--spacing-4);
+  --grid-gap-md: var(--spacing-6);
+  --grid-gap-lg: var(--spacing-8);
+  --grid-gap-xl: var(--spacing-12);
+
+  --sidebar-width: 16rem;
+  --header-height: 4rem;
+  --header-height-mobile: 3.5rem;
+  --nav-width: 14rem;
+
+  --z-index-hide: -1;
+  --z-index-auto: auto;
+  --z-index-base: 0;
+  --z-index-docked: 10;
+  --z-index-dropdown: 1000;
+  --z-index-sticky: 1020;
+  --z-index-banner: 1030;
+  --z-index-overlay: 1040;
+  --z-index-modal: 1050;
+  --z-index-popover: 1060;
+  --z-index-snackbar: 1070;
+  --z-index-toast: 1080;
+  --z-index-max: 9999;
+
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}
+
+:root {
+  --container-px: 1rem;
+  --px-section: clamp(1rem, 2.5vw, 4rem);
+  --py-section: clamp(2rem, 5vh, 6rem);
+  --component-spacing: var(--spacing-8);
+  --component-spacing-lg: var(--spacing-12);
+  --component-spacing-sm: var(--spacing-4);
+}
+
+@media (width >= 768px) {
+  :root {
+    --container-px: 1.5rem;
+  }
+}
+
+@media (width >= 1024px) {
+  :root {
+    --container-px: 2rem;
+  }
+}
+
+:root {
+  --space-xs: var(--spacing-2);
+  --space-sm: var(--spacing-3);
+  --space-md: var(--spacing-4);
+  --space-lg: var(--spacing-6);
+  --space-xl: var(--spacing-7);
+  --space-2xl: var(--spacing-8);
+  --space-3xl: var(--spacing-9);
+}

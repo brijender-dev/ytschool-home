@@ -1,0 +1,24 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import PublicHeader from '../components/PublicHeader.astro';
+import PublicFooter from '../components/PublicFooter.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogType?: 'website' | 'article' | 'profile';
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  noindex?: boolean;
+}
+
+const props = Astro.props;
+---
+
+<BaseLayout {...props}>
+  <PublicHeader />
+  <main id="main-content" class="flex-1">
+    <slot />
+  </main>
+  <PublicFooter />
+</BaseLayout>

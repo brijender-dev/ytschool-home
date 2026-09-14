@@ -1,0 +1,71 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+import Button from '../components/ui/Button.astro';
+
+const appUrl = (import.meta.env.PUBLIC_APP_URL || 'http://localhost:8080').replace(/\/$/, '');
+
+const pillars = [
+  {
+    title: 'Curated, not algorithmic',
+    body: 'Every course is hand-stitched from the best YouTube creators by educators who actually teach the subject.',
+  },
+  {
+    title: 'Purposeful progress',
+    body: 'Structured learning paths, checkpoints, and cohorts replace endless autoplay with measurable outcomes.',
+  },
+  {
+    title: 'Built with creators',
+    body: 'We partner with instructors and curators to amplify the videos that genuinely change how people think.',
+  },
+];
+---
+
+<MarketingLayout
+  title="About YTSchool"
+  description="YTSchool turns the best of YouTube into structured learning — courses, cohorts, and paths built by educators who care about outcomes."
+  canonical="/about"
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    name: 'About YTSchool',
+    url: '/about',
+  }}
+>
+  <section class="relative isolate overflow-hidden border-b border-border">
+    <span class="bg-grid" aria-hidden="true"></span>
+    <span class="bg-glow" aria-hidden="true"></span>
+    <div class="relative mx-auto w-full max-w-4xl px-4 py-24 text-center sm:px-6 lg:px-8">
+      <p class="section-head__eyebrow">Our mission</p>
+      <h1 class="mt-4 text-balance font-heading text-4xl font-semibold leading-tight text-foreground sm:text-5xl lg:text-6xl">
+        Learning, rescued from the algorithm.
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-pretty text-lg text-muted-foreground">
+        YTSchool exists because the world&apos;s best teachers are already on YouTube —
+        they&apos;re just buried under noise. We surface them, sequence them, and give
+        learners a calm place to grow.
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto w-full max-w-6xl px-4 py-20 sm:px-6 lg:px-8">
+    <div class="grid gap-8 md:grid-cols-3">
+      {
+        pillars.map((p) => (
+          <article class="rounded-2xl border border-border bg-card p-6">
+            <h2 class="font-heading text-lg font-semibold text-foreground">{p.title}</h2>
+            <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="border-t border-border bg-muted">
+    <div class="mx-auto flex max-w-4xl flex-col items-center px-4 py-16 text-center sm:px-6">
+      <p class="text-muted-foreground">Ready to learn with intent?</p>
+      <div class="mt-4">
+        <Button href={`${appUrl}/login`} variant="primary">Get started free</Button>
+      </div>
+    </div>
+  </section>
+</MarketingLayout>

@@ -1,0 +1,21 @@
+---
+import MarketingLayout from '../../layouts/MarketingLayout.astro';
+import Button from '../../components/ui/Button.astro';
+---
+
+<MarketingLayout
+  title="Checkout cancelled"
+  description="Your Razorpay checkout was cancelled. You can try again anytime."
+  canonical="/checkout/cancel"
+  noindex={true}
+>
+  <section class="mx-auto max-w-xl px-4 py-24 text-center">
+    <h1 class="font-heading text-4xl font-semibold text-foreground">Checkout cancelled</h1>
+    <p class="mt-4 text-muted-foreground">
+      No charge was completed. You can return to pricing whenever you are ready.
+    </p>
+    <div class="mt-8">
+      <Button href="/pricing" variant="primary">Back to pricing</Button>
+    </div>
+  </section>
+</MarketingLayout>

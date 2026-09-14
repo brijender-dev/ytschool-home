@@ -1,0 +1,137 @@
+---
+---
+
+<button
+  type="button"
+  class="theme-toggle"
+  data-theme-toggle
+  data-theme="light"
+  aria-pressed="false"
+  aria-label="Switch to dark mode"
+>
+  <svg
+    class="theme-toggle__icon theme-toggle__icon--light"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    aria-hidden="true"
+  >
+    <circle cx="12" cy="12" r="4"></circle>
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+  </svg>
+  <svg
+    class="theme-toggle__icon theme-toggle__icon--dark"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    aria-hidden="true"
+  >
+    <path d="M21 14.5A8.5 8.5 0 1 1 9.5 3a7 7 0 0 0 11.5 11.5z"></path>
+  </svg>
+  <span class="theme-toggle__label" data-theme-label>Switch to dark mode</span>
+</button>
+
+<script>
+  const storageKey = 'theme';
+  const root = document.documentElement;
+  const button = document.querySelector('[data-theme-toggle]');
+  const label = button?.querySelector('[data-theme-label]');
+
+  const syncTheme = (theme: string) => {
+    const isDark = theme === 'dark';
+    root.classList.toggle('dark', isDark);
+    if (button) {
+      button.setAttribute('aria-pressed', String(isDark));
+      button.setAttribute('data-theme', theme);
+      button.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+    }
+    if (label) {
+      label.textContent = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+    }
+  };
+
+  try {
+    const storedTheme = localStorage.getItem(storageKey);
+    const preferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light';
+    syncTheme(storedTheme === 'dark' || storedTheme === 'light' ? storedTheme : preferredTheme);
+
+    button?.addEventListener('click', () => {
+      const nextTheme = root.classList.contains('dark') ? 'light' : 'dark';
+      localStorage.setItem(storageKey, nextTheme);
+      syncTheme(nextTheme);
+    });
+  } catch {
+    // Ignore storage failures
+  }
+</script>
+
+<style>
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    background: var(--background);
+    color: var(--foreground);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--secondary);
+    transform: scale(1.05);
+  }
+
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  .theme-toggle:active {
+    transform: scale(0.95);
+  }
+
+  .theme-toggle__icon {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+
+  .theme-toggle__icon--dark {
+    display: none;
+  }
+
+  .theme-toggle[data-theme='dark'] .theme-toggle__icon--light {
+    display: none;
+  }
+
+  .theme-toggle[data-theme='dark'] .theme-toggle__icon--dark {
+    display: inline-block;
+  }
+
+  .theme-toggle[data-theme='light'] .theme-toggle__icon--light {
+    display: inline-block;
+  }
+
+  .theme-toggle__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+</style>

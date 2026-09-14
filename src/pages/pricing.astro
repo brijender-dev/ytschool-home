@@ -1,0 +1,61 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+import { PricingSection } from '../components/sections/PricingSection';
+import { MASTERY_PRICING } from '../data/plans';
+
+const appUrl = (import.meta.env.PUBLIC_APP_URL || 'http://localhost:8080').replace(/\/$/, '');
+const homeApiUrl = (import.meta.env.PUBLIC_HOME_API_URL || 'http://localhost:8787').replace(
+  /\/$/,
+  '',
+);
+const razorpayKeyId = import.meta.env.PUBLIC_RAZORPAY_KEY_ID || '';
+const site = import.meta.env.PUBLIC_SITE_URL || 'https://ytschool.com';
+
+const offerLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: 'YTSchool Mastery',
+  description: 'Full access to YTSchool learning tools and curated content.',
+  offers: [
+    {
+      '@type': 'Offer',
+      priceCurrency: MASTERY_PRICING.currency,
+      price: String(MASTERY_PRICING.monthly),
+      url: `${site}/pricing`,
+      availability: 'https://schema.org/InStock',
+      name: 'Mastery monthly',
+    },
+    {
+      '@type': 'Offer',
+      priceCurrency: MASTERY_PRICING.currency,
+      price: String(MASTERY_PRICING.yearly),
+      url: `${site}/pricing`,
+      availability: 'https://schema.org/InStock',
+      name: 'Mastery yearly',
+    },
+  ],
+};
+---
+
+<MarketingLayout
+  title="Pricing"
+  description="Start free with Viewer. Upgrade to Mastery for full YTSchool access — monthly or yearly INR pricing."
+  canonical="/pricing"
+  jsonLd={offerLd}
+>
+  <section class="border-b border-border bg-muted">
+    <div class="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6 lg:px-8">
+      <h1 class="font-heading text-4xl font-semibold text-foreground sm:text-5xl">Pricing</h1>
+      <p class="mt-4 text-muted-foreground">
+        Transparent INR plans. Pay with Razorpay when you are ready for Mastery.
+      </p>
+    </div>
+  </section>
+  <PricingSection
+    client:load
+    appUrl={appUrl}
+    homeApiUrl={homeApiUrl}
+    razorpayKeyId={razorpayKeyId}
+    enableCheckout={true}
+  />
+</MarketingLayout>

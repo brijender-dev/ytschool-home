@@ -1,0 +1,209 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import PublicHeader from '../components/PublicHeader.astro';
+import PublicFooter from '../components/PublicFooter.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  author: string;
+  tags?: string[];
+  readingTime?: number;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  pubDate,
+  updatedDate,
+  author,
+  tags = [],
+  readingTime,
+} = Astro.props;
+const site = import.meta.env.PUBLIC_SITE_URL || 'https://ytschool.com';
+
+const articleLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  datePublished: pubDate.toISOString(),
+  dateModified: (updatedDate ?? pubDate).toISOString(),
+  author: { '@type': 'Organization', name: author },
+  mainEntityOfPage: new URL(canonical, site).toString(),
+};
+
+const dateLabel = pubDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  ogType="article"
+  jsonLd={articleLd}
+>
+  <PublicHeader />
+  <main id="main-content" class="flex-1">
+    <div class="blog-layout container">
+      <header class="article-hero">
+        <div class="article-hero__content">
+          <h1>{title}</h1>
+          <p class="article-hero__description">{description}</p>
+          <p class="article-hero__meta">
+            <span class="article-hero__author">{author}</span>
+            <span class="article-hero__dot" aria-hidden="true">·</span>
+            <time datetime={pubDate.toISOString()}>{dateLabel}</time>
+            {
+              readingTime != null && (
+                <>
+                  <span class="article-hero__dot" aria-hidden="true">·</span>
+                  <span>{readingTime} min read</span>
+                </>
+              )
+            }
+          </p>
+          {
+            tags.length > 0 && (
+              <ul class="article-hero__tags">
+                {tags.map((tag) => (
+                  <li>{tag}</li>
+                ))}
+              </ul>
+            )
+          }
+        </div>
+      </header>
+
+      <div class="blog-layout__content">
+        <article class="blog-layout__article prose-yts">
+          <slot />
+        </article>
+      </div>
+
+      <p class="blog-layout__back">
+        <a href="/blog">← Back to blog</a>
+      </p>
+    </div>
+  </main>
+  <PublicFooter />
+</BaseLayout>
+
+<style>
+  .blog-layout {
+    display: grid;
+    gap: var(--space-2xl);
+    padding-block: var(--space-2xl) var(--space-3xl);
+  }
+
+  .article-hero {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+
+  .article-hero__content {
+    display: grid;
+    gap: var(--space-md);
+    max-width: 52rem;
+  }
+
+  .article-hero h1 {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+
+  .article-hero__description {
+    margin: 0;
+    color: var(--muted-foreground);
+    font-size: clamp(1.0625rem, 2vw, 1.25rem);
+    line-height: 1.6;
+    max-width: 42rem;
+    text-wrap: pretty;
+  }
+
+  .article-hero__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin: 0;
+    color: var(--muted-foreground);
+    font-size: 0.9375rem;
+  }
+
+  .article-hero__author {
+    color: var(--foreground);
+    font-weight: 600;
+  }
+
+  .article-hero__dot {
+    opacity: 0.5;
+  }
+
+  .article-hero__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .article-hero__tags li {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    background: var(--muted);
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .blog-layout__content {
+    display: grid;
+    gap: var(--space-xl);
+    align-items: start;
+  }
+
+  /* Comfortable reading measure for long-form content (starter uses 72ch). */
+  .blog-layout__article {
+    max-width: 72ch;
+    min-width: 0;
+  }
+
+  .blog-layout__back a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    color: var(--foreground);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    transition:
+      border-color 0.15s ease,
+      background 0.15s ease;
+  }
+
+  .blog-layout__back a:hover {
+    border-color: var(--muted-foreground);
+    background: var(--secondary);
+  }
+</style>

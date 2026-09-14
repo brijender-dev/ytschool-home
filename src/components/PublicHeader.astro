@@ -1,0 +1,258 @@
+---
+import Logo from './Logo.astro';
+import ThemeToggle from './ThemeToggle.astro';
+
+const appUrl = import.meta.env.PUBLIC_APP_URL || 'http://localhost:8080';
+const loginUrl = `${appUrl.replace(/\/$/, '')}/login`;
+
+const navLinks = [
+  { href: '/#features', label: 'Features' },
+  { href: '/#pricing', label: 'Pricing' },
+  { href: '/#testimonials', label: 'Testimonials' },
+  { href: '/blog', label: 'Blog' },
+];
+---
+
+<header class="header" data-header data-scrolled="up">
+  <div class="header__bar container">
+    <a href="/" aria-label="YTSchool home" class="header__logo">
+      <Logo variant="full" class="h-8" />
+    </a>
+
+    <nav class="header__desktop-nav" aria-label="Primary">
+      <ul class="header__list">
+        {
+          navLinks.map((l) => (
+            <li class="header__item">
+              <a href={l.href}>{l.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      <ThemeToggle />
+      <a href={loginUrl} class="header__cta">Get started</a>
+      <button
+        type="button"
+        class="header__menu-button"
+        data-menu-toggle
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <svg class="header__icon header__icon--menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+        <svg class="header__icon header__icon--close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="header__mobile" data-menu-panel hidden>
+    <ul class="header__mobile-list">
+      {
+        navLinks.map((l) => (
+          <li>
+            <a href={l.href}>{l.label}</a>
+          </li>
+        ))
+      }
+      <li>
+        <a href={loginUrl} class="header__mobile-cta">Get started</a>
+      </li>
+    </ul>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector('[data-header]');
+  const menuToggle = document.querySelector('[data-menu-toggle]');
+  const menuPanel = document.querySelector('[data-menu-panel]');
+
+  if (header && menuToggle && menuPanel) {
+    const syncMenu = (open: boolean) => {
+      menuToggle.setAttribute('aria-expanded', String(open));
+      (menuPanel as HTMLElement).hidden = !open;
+    };
+
+    menuToggle.addEventListener('click', () => {
+      syncMenu(menuToggle.getAttribute('aria-expanded') !== 'true');
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') syncMenu(false);
+    });
+  }
+
+  let lastScrollY = window.scrollY;
+  const updateScrollState = () => {
+    const currentY = window.scrollY;
+    header?.setAttribute(
+      'data-scrolled',
+      currentY > lastScrollY && currentY > 80 ? 'down' : 'up',
+    );
+    lastScrollY = currentY;
+  };
+
+  window.addEventListener('scroll', updateScrollState, { passive: true });
+  updateScrollState();
+</script>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 1px solid var(--border);
+    background: color-mix(in oklab, var(--background) 92%, transparent);
+    backdrop-filter: blur(14px);
+    transition: transform 0.2s ease;
+  }
+
+  .header[data-scrolled='down'] {
+    transform: translateY(-100%);
+  }
+
+  .header__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    min-height: 4.25rem;
+  }
+
+  .header__desktop-nav {
+    flex: 1;
+  }
+
+  .header__list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-lg);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .header__item > a {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.65rem;
+    border-radius: var(--radius-md);
+    color: var(--muted-foreground);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    transition:
+      color 0.15s ease,
+      background-color 0.15s ease;
+  }
+
+  .header__item > a:hover {
+    color: var(--foreground);
+    background: var(--accent);
+  }
+
+  .header__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .header__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.5rem;
+    padding: 0 1.1rem;
+    border-radius: var(--radius-full);
+    background: var(--primary);
+    color: var(--primary-foreground);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.15s ease;
+  }
+
+  .header__cta:hover {
+    opacity: 0.9;
+  }
+
+  .header__menu-button {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    background: var(--background);
+    color: var(--foreground);
+    cursor: pointer;
+  }
+
+  .header__icon {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+
+  .header__icon--close {
+    display: none;
+  }
+
+  .header__menu-button[aria-expanded='true'] .header__icon--menu {
+    display: none;
+  }
+
+  .header__menu-button[aria-expanded='true'] .header__icon--close {
+    display: inline-block;
+  }
+
+  .header__mobile {
+    border-top: 1px solid var(--border);
+    background: var(--background);
+  }
+
+  .header__mobile-list {
+    list-style: none;
+    margin: 0;
+    padding: var(--space-md) var(--container-px);
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .header__mobile-list a {
+    display: block;
+    padding: 0.6rem 0.5rem;
+    border-radius: var(--radius-md);
+    color: var(--foreground);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .header__mobile-cta {
+    margin-top: 0.5rem;
+    text-align: center;
+    background: var(--primary) !important;
+    color: var(--primary-foreground) !important;
+  }
+
+  @media (max-width: 60rem) {
+    .header__desktop-nav {
+      display: none;
+    }
+
+    .header__cta {
+      display: none;
+    }
+
+    .header__menu-button {
+      display: inline-flex;
+    }
+  }
+</style>

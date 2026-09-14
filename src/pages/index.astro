@@ -1,0 +1,53 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+import HeroSection from '../components/sections/HeroSection.astro';
+import VideoDemoSection from '../components/sections/VideoDemoSection.astro';
+import TestimonialsSection from '../components/sections/TestimonialsSection.astro';
+import InspirationQuoteSection from '../components/sections/InspirationQuoteSection.astro';
+import GetStartedSection from '../components/sections/GetStartedSection.astro';
+import { FeatureGroupSection } from '../components/sections/FeatureGroupSection';
+import { PricingSection } from '../components/sections/PricingSection';
+import { FEATURE_GROUPS } from '../data/featureGroups';
+
+const appUrl = (import.meta.env.PUBLIC_APP_URL || 'http://localhost:8080').replace(/\/$/, '');
+const homeApiUrl = (import.meta.env.PUBLIC_HOME_API_URL || 'http://localhost:8787').replace(
+  /\/$/,
+  '',
+);
+const razorpayKeyId = import.meta.env.PUBLIC_RAZORPAY_KEY_ID || '';
+
+const organizationLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'YTSchool',
+  url: import.meta.env.PUBLIC_SITE_URL || 'https://ytschool.com',
+  description:
+    'Structured courses, learning paths, and cohorts built from the best YouTube videos.',
+};
+---
+
+<MarketingLayout
+  title="YTSchool — Curated YouTube learning, purposeful progress"
+  description="Structured courses, learning paths, and cohorts built from the best YouTube videos. Learn any skill without algorithm noise."
+  canonical="/"
+  jsonLd={organizationLd}
+>
+  <HeroSection />
+  <section id="features" class="sr-only" aria-hidden="true"></section>
+  {
+    FEATURE_GROUPS.map((group) => (
+      <FeatureGroupSection client:load group={group} appUrl={appUrl} />
+    ))
+  }
+  <VideoDemoSection />
+  <PricingSection
+    client:load
+    appUrl={appUrl}
+    homeApiUrl={homeApiUrl}
+    razorpayKeyId={razorpayKeyId}
+    enableCheckout={true}
+  />
+  <TestimonialsSection />
+  <InspirationQuoteSection />
+  <GetStartedSection />
+</MarketingLayout>

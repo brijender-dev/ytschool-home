@@ -1,0 +1,26 @@
+---
+import MarketingLayout from '../../layouts/MarketingLayout.astro';
+import Button from '../../components/ui/Button.astro';
+
+const appUrl = (import.meta.env.PUBLIC_APP_URL || 'http://localhost:8080').replace(/\/$/, '');
+const orderId = Astro.url.searchParams.get('order_id');
+---
+
+<MarketingLayout
+  title="Payment received"
+  description="Your Razorpay payment was submitted. Entitlement activates after webhook confirmation."
+  canonical="/checkout/success"
+  noindex={true}
+>
+  <section class="mx-auto max-w-xl px-4 py-24 text-center">
+    <h1 class="font-heading text-4xl font-semibold text-foreground">Thank you</h1>
+    <p class="mt-4 text-muted-foreground">
+      Your payment was submitted. Mastery access is confirmed when Razorpay notifies our servers
+      (usually within a few seconds).
+    </p>
+    {orderId && <p class="mt-3 text-xs text-muted-foreground">Order: {orderId}</p>}
+    <div class="mt-8">
+      <Button href={`${appUrl}/login`} variant="primary">Open the app</Button>
+    </div>
+  </section>
+</MarketingLayout>

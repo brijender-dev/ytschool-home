@@ -1,0 +1,310 @@
+/**
+ * global.css — YTSchool design system (astro-cloudflare-starter theme)
+ */
+
+@import "tailwindcss";
+
+@import "./tokens/colors.css";
+@import "./tokens/typography.css";
+@import "./tokens/spacing.css";
+
+@import "@fontsource-variable/manrope";
+@import "@fontsource-variable/outfit";
+@import "@fontsource-variable/jetbrains-mono";
+
+@font-face {
+  font-family: "Outfit Fallback";
+  src: local("Arial");
+  ascent-override: 103%;
+  descent-override: 20%;
+  line-gap-override: 0%;
+  size-adjust: 107%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Manrope Fallback";
+  src: local("Arial");
+  ascent-override: 101%;
+  descent-override: 20%;
+  line-gap-override: 0%;
+  size-adjust: 105%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono Fallback";
+  src: local("Courier New");
+  ascent-override: 102%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+  size-adjust: 112%;
+  font-display: swap;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+  --color-surface-invert: var(--surface-invert);
+  --color-surface-invert-foreground: var(--surface-invert-foreground);
+
+  --font-sans: var(--font-sans);
+  --font-heading: var(--font-heading);
+  --font-mono: var(--font-mono);
+
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+  --radius-full: var(--radius-full);
+
+  --animate-marquee: marquee 40s linear infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+::selection {
+  background-color: color-mix(in srgb, var(--primary) 25%, transparent);
+  color: var(--foreground);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--muted-foreground) transparent;
+  border-color: var(--border);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--foreground);
+  background-color: var(--background);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+  color: var(--foreground);
+}
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-px);
+}
+
+.bg-grid {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--foreground) 7%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--foreground) 7%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 75% 60% at 50% 0%, #000 40%, transparent 100%);
+}
+
+.bg-glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 60% 50% at 50% -10%,
+    color-mix(in srgb, var(--foreground) 8%, transparent),
+    transparent 70%
+  );
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bg-glow {
+    animation: bg-glow-pulse 8s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes bg-glow-pulse {
+  from {
+    opacity: 70%;
+  }
+  to {
+    opacity: 100%;
+  }
+}
+
+.section-head {
+  max-width: 44rem;
+  margin: 0 auto var(--spacing-7);
+  text-align: center;
+}
+
+.section-head__eyebrow {
+  display: inline-block;
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.section-head__title {
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw, 2.25rem);
+  letter-spacing: -0.01em;
+  font-family: var(--font-heading);
+}
+
+.section-head__lead {
+  margin: 0.6rem 0 0;
+  color: var(--muted-foreground);
+  line-height: 1.65;
+}
+
+/* Blog MDX prose — reading measure aligned with starter (72ch) */
+.prose-yts {
+  color: var(--foreground);
+  max-width: 72ch;
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+}
+
+.prose-yts > :first-child {
+  margin-top: 0;
+}
+
+.prose-yts a {
+  color: var(--foreground);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 500;
+}
+
+.prose-yts a:hover {
+  opacity: 0.8;
+}
+
+.prose-yts h2,
+.prose-yts h3,
+.prose-yts h4 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  letter-spacing: -0.01em;
+}
+
+.prose-yts h2 {
+  margin-top: 2em;
+  margin-bottom: 0.75em;
+  font-size: clamp(1.35rem, 2vw, 1.6rem);
+}
+
+.prose-yts h3 {
+  margin-top: 1.75em;
+  margin-bottom: 0.6em;
+  font-size: 1.2rem;
+}
+
+.prose-yts ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+  margin: 1.25em 0;
+}
+
+.prose-yts ol {
+  list-style: decimal;
+  padding-left: 1.25rem;
+  margin: 1.25em 0;
+}
+
+.prose-yts li + li {
+  margin-top: 0.4em;
+}
+
+.prose-yts p {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+
+.prose-yts blockquote {
+  margin: 1.5em 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--border);
+  color: var(--muted-foreground);
+}
+
+.prose-yts code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--muted);
+  padding: 0.15em 0.35em;
+  border-radius: var(--radius-sm);
+}
+
+.prose-yts pre {
+  margin: 1.5em 0;
+  padding: var(--spacing-5);
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--muted);
+}
+
+.prose-yts pre code {
+  background: transparent;
+  padding: 0;
+}

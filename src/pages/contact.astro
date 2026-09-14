@@ -1,0 +1,61 @@
+---
+import MarketingLayout from '../layouts/MarketingLayout.astro';
+
+const channels = [
+  {
+    title: 'Support',
+    body: 'Account, billing, or product questions.',
+    href: 'mailto:support@ytschool.app',
+    cta: 'support@ytschool.app',
+  },
+  {
+    title: 'Partnerships',
+    body: 'Creators, curators, and institutional collaborations.',
+    href: 'mailto:partners@ytschool.app',
+    cta: 'partners@ytschool.app',
+  },
+  {
+    title: 'Legal & takedowns',
+    body: 'Copyright, content policy, or privacy notices.',
+    href: 'mailto:legal@ytschool.app',
+    cta: 'legal@ytschool.app',
+  },
+];
+---
+
+<MarketingLayout
+  title="Contact YTSchool"
+  description="Reach the YTSchool team — support, partnerships, and legal contacts for our curated learning platform."
+  canonical="/contact"
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    name: 'Contact YTSchool',
+    url: '/contact',
+  }}
+>
+  <section class="border-b border-border bg-muted">
+    <div class="mx-auto w-full max-w-4xl px-4 py-20 text-center sm:px-6 lg:px-8">
+      <h1 class="font-heading text-4xl font-semibold text-foreground sm:text-5xl">Get in touch</h1>
+      <p class="mx-auto mt-4 max-w-xl text-muted-foreground">
+        Pick the channel that fits. We answer every message — usually within a couple of business days.
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+    <div class="grid gap-6 md:grid-cols-3">
+      {
+        channels.map((c) => (
+          <article class="rounded-2xl border border-border bg-card p-6">
+            <h2 class="font-heading text-lg font-semibold text-foreground">{c.title}</h2>
+            <p class="mt-2 text-sm text-muted-foreground">{c.body}</p>
+            <a href={c.href} class="mt-4 inline-block text-sm font-semibold text-foreground underline underline-offset-2 hover:opacity-80">
+              {c.cta}
+            </a>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+</MarketingLayout>

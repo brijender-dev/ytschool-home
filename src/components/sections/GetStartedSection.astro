@@ -1,0 +1,77 @@
+---
+const appUrl = (import.meta.env.PUBLIC_APP_URL || 'http://localhost:8080').replace(/\/$/, '');
+---
+
+<section class="get-started">
+  <div class="get-started__inner container">
+    <div class="get-started__card">
+      <p class="get-started__eyebrow">Get started</p>
+      <h2 class="get-started__title">Curated videos, purposeful learning.</h2>
+      <p class="get-started__lead">
+        Learn from the world&apos;s best YouTube teachers — then build something further.
+      </p>
+      <a href={`${appUrl}/login`} class="get-started__button">Start learning — it&apos;s free</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .get-started {
+    background: var(--background);
+    padding-block: var(--space-2xl);
+  }
+
+  .get-started__card {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(2rem, 4vw, 3.5rem);
+    border-radius: var(--radius-2xl);
+    background: var(--surface-invert);
+    color: var(--surface-invert-foreground);
+    border: 1px solid var(--surface-invert-border);
+    text-align: center;
+  }
+
+  .get-started__eyebrow {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  .get-started__title {
+    margin: 0.75rem 0 0;
+    font-family: var(--font-heading);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    color: inherit;
+  }
+
+  .get-started__lead {
+    margin: 0.75rem auto 0;
+    max-width: 36rem;
+    opacity: 0.8;
+    line-height: 1.6;
+  }
+
+  .get-started__button {
+    display: inline-flex;
+    margin-top: 1.5rem;
+    align-items: center;
+    justify-content: center;
+    height: 2.75rem;
+    padding: 0 1.5rem;
+    border-radius: var(--radius-full);
+    background: var(--surface-invert-foreground);
+    color: var(--surface-invert);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    text-decoration: none;
+    transition: opacity 0.15s ease;
+  }
+
+  .get-started__button:hover {
+    opacity: 0.9;
+  }
+</style>

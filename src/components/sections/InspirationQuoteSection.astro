@@ -1,0 +1,122 @@
+---
+---
+
+<section class="inspiration" aria-label="Inspiration">
+  <figure class="inspiration__inner">
+    <span class="inspiration__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path
+          d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10H0z"
+        ></path>
+      </svg>
+    </span>
+
+    <blockquote class="inspiration__quote">
+      &ldquo;If I have seen further, it is by standing on the{' '}
+      <a
+        href="https://en.wikipedia.org/wiki/Standing_on_the_shoulders_of_giants"
+        target="_blank"
+        rel="noreferrer"
+      >
+        shoulders of giants
+      </a>
+      .&rdquo;
+    </blockquote>
+
+    <figcaption class="inspiration__attr">
+      <span aria-hidden="true" class="inspiration__rule"></span>
+      <span>Isaac Newton</span>
+      <span aria-hidden="true" class="inspiration__rule"></span>
+    </figcaption>
+
+    <p class="inspiration__lead">
+      That&apos;s the spirit behind YTSchool — learn from the world&apos;s best, then build something
+      further.
+    </p>
+  </figure>
+</section>
+
+<style>
+  .inspiration {
+    background: var(--background);
+    border-top: 1px solid var(--border);
+  }
+
+  .inspiration__inner {
+    margin: 0 auto;
+    max-width: 48rem;
+    padding: clamp(3.5rem, 8vw, 6rem) var(--container-px);
+    text-align: center;
+  }
+
+  .inspiration__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: var(--radius-xl);
+    background: var(--primary);
+    color: var(--primary-foreground);
+    box-shadow: var(--shadow-md);
+  }
+
+  .inspiration__icon svg {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+
+  .inspiration__quote {
+    margin: 2rem 0 0;
+    font-family:
+      "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+    font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--foreground);
+    text-wrap: balance;
+  }
+
+  .inspiration__quote a {
+    font-style: normal;
+    font-weight: 600;
+    color: var(--muted-foreground);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+    transition: color 0.15s ease;
+  }
+
+  .inspiration__quote a:hover {
+    color: var(--foreground);
+  }
+
+  .inspiration__attr {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--foreground);
+  }
+
+  .inspiration__rule {
+    display: block;
+    width: 2rem;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .inspiration__lead {
+    margin: 1rem auto 0;
+    max-width: 28rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--muted-foreground);
+  }
+</style>
