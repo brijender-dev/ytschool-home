@@ -1,6 +1,6 @@
 # YTSchool Home
 
-Marketing site for YTSchool — curated YouTube learning.
+Marketing site for YTSchool - Landing page and blogs.
 
 ## Develop
 
