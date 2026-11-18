@@ -1,8 +1,9 @@
 ---
 import MarketingLayout from '../layouts/MarketingLayout.astro';
 import Button from '../components/ui/Button.astro';
+import { getSiteConfig } from '../lib/site';
 
-const appUrl = (import.meta.env.PUBLIC_APP_URL || 'http://localhost:8080').replace(/\/$/, '');
+const { primaryCtaHref, primaryCtaLabel, appReady } = getSiteConfig();
 
 const pillars = [
   {
@@ -37,12 +38,12 @@ const pillars = [
     <div class="relative mx-auto w-full max-w-4xl px-4 py-24 text-center sm:px-6 lg:px-8">
       <p class="section-head__eyebrow">Our mission</p>
       <h1 class="mt-4 text-balance font-heading text-4xl font-semibold leading-tight text-foreground sm:text-5xl lg:text-6xl">
-        Learning, rescued from the algorithm.
+        Study with the teachers YouTube already has.
       </h1>
       <p class="mx-auto mt-6 max-w-2xl text-pretty text-lg text-muted-foreground">
-        YTSchool exists because the world&apos;s best teachers are already on YouTube —
-        they&apos;re just buried under noise. We surface them, sequence them, and give
-        learners a calm place to grow.
+        YTSchool exists because remarkable teachers already publish on YouTube. We
+        arrange the lessons they share into courses, sequences, and cohorts — a calm
+        place for learners to follow a subject and grow.
       </p>
     </div>
   </section>
@@ -62,9 +63,13 @@ const pillars = [
 
   <section class="border-t border-border bg-muted">
     <div class="mx-auto flex max-w-4xl flex-col items-center px-4 py-16 text-center sm:px-6">
-      <p class="text-muted-foreground">Ready to learn with intent?</p>
+      <p class="text-muted-foreground">
+        {appReady ? 'Ready to learn with intent?' : 'Want early access when we launch?'}
+      </p>
       <div class="mt-4">
-        <Button href={`${appUrl}/login`} variant="primary">Get started free</Button>
+        <Button href={primaryCtaHref} variant="primary">
+          {appReady ? 'Get started free' : primaryCtaLabel}
+        </Button>
       </div>
     </div>
   </section>

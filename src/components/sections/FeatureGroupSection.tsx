@@ -28,10 +28,12 @@ function FeatureIcon({ name }: { name: FeatureGroup['features'][number]['icon'] 
 
 export function FeatureGroupSection({
   group,
-  appUrl,
+  ctaHref,
+  ctaLabel,
 }: {
   group: FeatureGroup;
-  appUrl: string;
+  ctaHref: string;
+  ctaLabel: string;
 }) {
   const [active, setActive] = useState(0);
   const feature = group.features[active];
@@ -91,10 +93,10 @@ export function FeatureGroupSection({
 
             <div className="mt-8">
               <a
-                href={`${appUrl}/login`}
+                href={ctaHref}
                 className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
               >
-                {group.ctaLabel} →
+                {ctaLabel} →
               </a>
             </div>
           </div>

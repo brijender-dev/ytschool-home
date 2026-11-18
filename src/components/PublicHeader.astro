@@ -1,14 +1,15 @@
 ---
 import Logo from './Logo.astro';
 import ThemeToggle from './ThemeToggle.astro';
+import { getSiteConfig } from '../lib/site';
 
-const appUrl = import.meta.env.PUBLIC_APP_URL || 'http://localhost:8080';
-const loginUrl = `${appUrl.replace(/\/$/, '')}/login`;
+const { primaryCtaHref, primaryCtaLabel } = getSiteConfig();
 
 const navLinks = [
   { href: '/#features', label: 'Features' },
   { href: '/#pricing', label: 'Pricing' },
   { href: '/#testimonials', label: 'Testimonials' },
+  { href: '/docs', label: 'Docs' },
   { href: '/blog', label: 'Blog' },
 ];
 ---
@@ -33,7 +34,7 @@ const navLinks = [
 
     <div class="header__actions">
       <ThemeToggle />
-      <a href={loginUrl} class="header__cta">Get started</a>
+      <a href={primaryCtaHref} class="header__cta">{primaryCtaLabel}</a>
       <button
         type="button"
         class="header__menu-button"
@@ -62,7 +63,7 @@ const navLinks = [
         ))
       }
       <li>
-        <a href={loginUrl} class="header__mobile-cta">Get started</a>
+        <a href={primaryCtaHref} class="header__mobile-cta">{primaryCtaLabel}</a>
       </li>
     </ul>
   </div>

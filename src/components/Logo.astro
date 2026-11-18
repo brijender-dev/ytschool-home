@@ -8,16 +8,21 @@ const { className = 'h-8', variant = 'full' } = Astro.props;
 ---
 
 <span class:list={['logo inline-flex items-center gap-2 font-semibold tracking-tight text-foreground', className]}>
-  <svg class="h-full w-auto" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-    <rect width="32" height="32" rx="8" fill="currentColor"></rect>
-    <path d="M8 10h16v3H8V10zm0 5h10v3H8v-3zm0 5h14v3H8v-3z" fill="var(--primary-foreground)"></path>
-  </svg>
+  <img
+    class="logo__mark h-full w-auto"
+    src="/ytschool-logo.png"
+    width="32"
+    height="32"
+    alt=""
+    decoding="async"
+  />
   {variant === 'full' && <span class="logo__wordmark text-lg font-heading">YTSchool</span>}
 </span>
 
 <style>
-  .logo svg {
-    color: var(--primary);
+  .logo__mark {
+    display: block;
+    flex-shrink: 0;
   }
 
   .logo__wordmark {

@@ -10,6 +10,7 @@ const columns = [
     links: [
       { label: 'Features', href: '/#features' },
       { label: 'Pricing', href: '/pricing' },
+      { label: 'Docs', href: '/docs' },
       { label: 'Blog', href: '/blog' },
     ],
   },
@@ -31,21 +32,21 @@ const columns = [
 ];
 
 const socialLinks = [
-  {
+/*  {
     label: 'GitHub',
     href: 'https://github.com/ytschool',
     external: true,
     icon: 'github' as const,
-  },
+  },*/
   {
     label: 'LinkedIn',
-    href: 'https://www.linkedin.com/company/ytschool',
+    href: 'https://www.linkedin.com/company/ytschool-learning',
     external: true,
     icon: 'linkedin' as const,
   },
   {
     label: 'Email',
-    href: 'mailto:support@ytschool.app',
+    href: 'mailto:brijender@ytschool.com',
     external: false,
     icon: 'email' as const,
   },
@@ -144,7 +145,17 @@ const socialLinks = [
 
     <div class="footer__meta">
       <p>&copy; {year} YTSchool. All rights reserved.</p>
-      <p>Built for curious learners.</p>
+      <p class="footer__tagline">
+        Built
+        <span class="footer__heart-wrap" aria-hidden="true">
+          <svg class="footer__heart" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+            ></path>
+          </svg>
+        </span>
+        for curious learners.
+      </p>
     </div>
   </div>
 </footer>
@@ -218,6 +229,52 @@ const socialLinks = [
     border-top: 1px solid var(--border);
     color: var(--muted-foreground);
     font-size: 0.8125rem;
+  }
+
+  .footer__tagline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+  }
+
+  .footer__heart-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+  }
+
+  .footer__heart {
+    width: 0.9em;
+    height: 0.9em;
+    color: #e11d48;
+    transform-origin: center;
+    animation: footer-heartbeat 1.6s ease-in-out infinite;
+  }
+
+  @keyframes footer-heartbeat {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    14% {
+      transform: scale(1.18);
+    }
+    28% {
+      transform: scale(1);
+    }
+    42% {
+      transform: scale(1.12);
+    }
+    56% {
+      transform: scale(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .footer__heart {
+      animation: none;
+    }
   }
 
   @media (max-width: 60rem) {

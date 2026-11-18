@@ -1,15 +1,12 @@
 ---
 import MarketingLayout from '../layouts/MarketingLayout.astro';
 import { PricingSection } from '../components/sections/PricingSection';
-import { MASTERY_PRICING } from '../data/plans';
+import { WaitlistSection } from '../components/sections/WaitlistSection';
+import { MASTERY_PRICING_INR, MASTERY_PRICING_USD } from '../data/plans';
+import { getSiteConfig } from '../lib/site';
 
-const appUrl = (import.meta.env.PUBLIC_APP_URL || 'http://localhost:8080').replace(/\/$/, '');
-const homeApiUrl = (import.meta.env.PUBLIC_HOME_API_URL || 'http://localhost:8787').replace(
-  /\/$/,
-  '',
-);
-const razorpayKeyId = import.meta.env.PUBLIC_RAZORPAY_KEY_ID || '';
-const site = import.meta.env.PUBLIC_SITE_URL || 'https://ytschool.com';
+const site = getSiteConfig();
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://ytschool.com';
 
 const offerLd = {
   '@context': 'https://schema.org',
@@ -19,19 +16,35 @@ const offerLd = {
   offers: [
     {
       '@type': 'Offer',
-      priceCurrency: MASTERY_PRICING.currency,
-      price: String(MASTERY_PRICING.monthly),
-      url: `${site}/pricing`,
+      priceCurrency: MASTERY_PRICING_INR.currency,
+      price: String(MASTERY_PRICING_INR.monthly),
+      url: `${siteUrl}/pricing`,
       availability: 'https://schema.org/InStock',
-      name: 'Mastery monthly',
+      name: 'Mastery monthly (INR)',
     },
     {
       '@type': 'Offer',
-      priceCurrency: MASTERY_PRICING.currency,
-      price: String(MASTERY_PRICING.yearly),
-      url: `${site}/pricing`,
+      priceCurrency: MASTERY_PRICING_INR.currency,
+      price: String(MASTERY_PRICING_INR.yearly),
+      url: `${siteUrl}/pricing`,
       availability: 'https://schema.org/InStock',
-      name: 'Mastery yearly',
+      name: 'Mastery yearly (INR)',
+    },
+    {
+      '@type': 'Offer',
+      priceCurrency: MASTERY_PRICING_USD.currency,
+      price: String(MASTERY_PRICING_USD.monthly),
+      url: `${siteUrl}/pricing`,
+      availability: 'https://schema.org/InStock',
+      name: 'Mastery monthly (USD)',
+    },
+    {
+      '@type': 'Offer',
+      priceCurrency: MASTERY_PRICING_USD.currency,
+      price: String(MASTERY_PRICING_USD.yearly),
+      url: `${siteUrl}/pricing`,
+      availability: 'https://schema.org/InStock',
+      name: 'Mastery yearly (USD)',
     },
   ],
 };
@@ -39,7 +52,7 @@ const offerLd = {
 
 <MarketingLayout
   title="Pricing"
-  description="Start free with Viewer. Upgrade to Mastery for full YTSchool access — monthly or yearly INR pricing."
+  description="Start free with Viewer. Upgrade to Mastery for full YTSchool access — monthly or yearly pricing in INR or USD."
   canonical="/pricing"
   jsonLd={offerLd}
 >
@@ -47,15 +60,28 @@ const offerLd = {
     <div class="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6 lg:px-8">
       <h1 class="font-heading text-4xl font-semibold text-foreground sm:text-5xl">Pricing</h1>
       <p class="mt-4 text-muted-foreground">
-        Transparent INR plans. Pay with Razorpay when you are ready for Mastery.
+        {
+          site.appReady
+            ? 'Transparent plans in INR and USD. Upgrade to Mastery in the app when you are ready.'
+            : 'Transparent plans in INR and USD. Join the waitlist and we will notify you when billing opens.'
+        }
       </p>
     </div>
   </section>
   <PricingSection
     client:load
-    appUrl={appUrl}
-    homeApiUrl={homeApiUrl}
-    razorpayKeyId={razorpayKeyId}
-    enableCheckout={true}
+    appReady={site.appReady}
+    viewerHref={site.viewerLoginUrl}
+    masteryHref={site.masteryBillingUrl}
+    waitlistHref={site.waitlistHref}
   />
+  {
+    !site.appReady && (
+      <WaitlistSection
+        client:load
+        waitlistUrl={site.waitlistUrl}
+        waitlistToken={site.waitlistToken}
+      />
+    )
+  }
 </MarketingLayout>

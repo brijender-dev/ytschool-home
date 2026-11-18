@@ -1,0 +1,39 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('docs', ({ data }) => {
+    return import.meta.env.PROD ? !data.draft : true;
+  });
+
+  const navSource = (await getCollection('docs', ({ data }) => !data.draft)).sort(
+    (a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title),
+  );
+
+  return docs.map((doc) => ({
+    params: { slug: doc.id },
+    props: {
+      doc,
+      navItems: navSource.map((item) => ({
+        href: `/docs/${item.id}`,
+        title: item.data.title,
+        section: item.data.section,
+        current: item.id === doc.id,
+      })),
+    },
+  }));
+}
+
+const { doc, navItems } = Astro.props;
+const { Content } = await render(doc);
+---
+
+<DocsLayout
+  title={doc.data.title}
+  description={doc.data.description}
+  canonical={`/docs/${doc.id}`}
+  navItems={navItems}
+>
+  <Content />
+</DocsLayout>

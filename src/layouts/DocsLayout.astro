@@ -1,0 +1,170 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import PublicHeader from '../components/PublicHeader.astro';
+import PublicFooter from '../components/PublicFooter.astro';
+
+interface DocNavItem {
+  href: string;
+  title: string;
+  section: string;
+  current?: boolean;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  navItems: DocNavItem[];
+}
+
+const { title, description, canonical, navItems } = Astro.props;
+
+const sections = navItems.reduce<Record<string, DocNavItem[]>>((acc, item) => {
+  (acc[item.section] ??= []).push(item);
+  return acc;
+}, {});
+---
+
+<BaseLayout title={title} description={description} canonical={canonical}>
+  <PublicHeader />
+  <main id="main-content" class="flex-1">
+    <div class="docs-layout container">
+      <aside class="docs-layout__sidebar" aria-label="Documentation">
+        {
+          Object.entries(sections).map(([section, items]) => (
+            <div class="docs-nav-group">
+              <p class="docs-nav-group__title">{section}</p>
+              <ul>
+                {items.map((item) => (
+                  <li>
+                    <a href={item.href} aria-current={item.current ? 'page' : undefined}>
+                      {item.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </aside>
+
+      <article class="docs-layout__article prose-yts">
+        <header class="docs-layout__hero">
+          <h1>{title}</h1>
+          <p>{description}</p>
+        </header>
+        <slot />
+        <p class="docs-layout__back">
+          <a href="/docs">← All docs</a>
+        </p>
+      </article>
+    </div>
+  </main>
+  <PublicFooter />
+</BaseLayout>
+
+<style>
+  .docs-layout {
+    display: grid;
+    gap: var(--space-2xl);
+    padding-block: var(--space-2xl) var(--space-3xl);
+  }
+
+  .docs-layout__sidebar {
+    display: grid;
+    gap: var(--space-lg);
+    align-content: start;
+  }
+
+  .docs-nav-group__title {
+    margin: 0 0 var(--space-sm);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  .docs-nav-group ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .docs-nav-group a {
+    display: block;
+    padding: 0.45rem 0.65rem;
+    border-radius: var(--radius-md);
+    color: var(--muted-foreground);
+    text-decoration: none;
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+
+  .docs-nav-group a:hover {
+    color: var(--foreground);
+    background: var(--muted);
+  }
+
+  .docs-nav-group a[aria-current='page'] {
+    color: var(--foreground);
+    background: var(--muted);
+    font-weight: 600;
+  }
+
+  .docs-layout__article {
+    min-width: 0;
+    max-width: 72ch;
+  }
+
+  .docs-layout__hero {
+    display: grid;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-xl);
+  }
+
+  .docs-layout__hero h1 {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .docs-layout__hero p {
+    margin: 0;
+    color: var(--muted-foreground);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+
+  .docs-layout__back {
+    margin-top: var(--space-2xl);
+  }
+
+  .docs-layout__back a {
+    color: var(--foreground);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .docs-layout__back a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (min-width: 56rem) {
+    .docs-layout {
+      grid-template-columns: 14rem minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .docs-layout__sidebar {
+      position: sticky;
+      top: 5.5rem;
+    }
+  }
+</style>

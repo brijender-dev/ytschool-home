@@ -7,14 +7,11 @@ import InspirationQuoteSection from '../components/sections/InspirationQuoteSect
 import GetStartedSection from '../components/sections/GetStartedSection.astro';
 import { FeatureGroupSection } from '../components/sections/FeatureGroupSection';
 import { PricingSection } from '../components/sections/PricingSection';
+import { WaitlistSection } from '../components/sections/WaitlistSection';
 import { FEATURE_GROUPS } from '../data/featureGroups';
+import { getSiteConfig } from '../lib/site';
 
-const appUrl = (import.meta.env.PUBLIC_APP_URL || 'http://localhost:8080').replace(/\/$/, '');
-const homeApiUrl = (import.meta.env.PUBLIC_HOME_API_URL || 'http://localhost:8787').replace(
-  /\/$/,
-  '',
-);
-const razorpayKeyId = import.meta.env.PUBLIC_RAZORPAY_KEY_ID || '';
+const site = getSiteConfig();
 
 const organizationLd = {
   '@context': 'https://schema.org',
@@ -27,7 +24,7 @@ const organizationLd = {
 ---
 
 <MarketingLayout
-  title="YTSchool — Curated YouTube learning, purposeful progress"
+  title="YTSchool — Curated Videos, Purposeful Learning"
   description="Structured courses, learning paths, and cohorts built from the best YouTube videos. Learn any skill without algorithm noise."
   canonical="/"
   jsonLd={organizationLd}
@@ -36,18 +33,30 @@ const organizationLd = {
   <section id="features" class="sr-only" aria-hidden="true"></section>
   {
     FEATURE_GROUPS.map((group) => (
-      <FeatureGroupSection client:load group={group} appUrl={appUrl} />
+      <FeatureGroupSection
+        client:load
+        group={group}
+        ctaHref={site.appReady ? site.primaryCtaHref : site.waitlistHref}
+        ctaLabel={group.ctaLabel}
+      />
     ))
   }
   <VideoDemoSection />
   <PricingSection
     client:load
-    appUrl={appUrl}
-    homeApiUrl={homeApiUrl}
-    razorpayKeyId={razorpayKeyId}
-    enableCheckout={true}
+    appReady={site.appReady}
+    viewerHref={site.viewerLoginUrl}
+    masteryHref={site.masteryBillingUrl}
+    waitlistHref={site.waitlistHref}
   />
   <TestimonialsSection />
   <InspirationQuoteSection />
+  {!site.appReady && (
+    <WaitlistSection
+      client:load
+      waitlistUrl={site.waitlistUrl}
+      waitlistToken={site.waitlistToken}
+    />
+  )}
   <GetStartedSection />
 </MarketingLayout>

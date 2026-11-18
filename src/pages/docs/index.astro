@@ -1,0 +1,121 @@
+---
+import MarketingLayout from '../../layouts/MarketingLayout.astro';
+import { getCollection } from 'astro:content';
+
+const docs = (await getCollection('docs', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title),
+);
+
+const sections = docs.reduce<Record<string, typeof docs>>((acc, doc) => {
+  (acc[doc.data.section] ??= []).push(doc);
+  return acc;
+}, {});
+---
+
+<MarketingLayout
+  title="Docs"
+  description="Guides for getting started with YTSchool — curated YouTube learning, sign-in, and more."
+  canonical="/docs"
+>
+  <div class="docs-index container">
+    <header class="docs-index__hero">
+      <h1>Docs</h1>
+      <p>
+        Short guides for how YTSchool works. More pages will appear here as the product grows.
+      </p>
+    </header>
+
+    {
+      Object.entries(sections).map(([section, items]) => (
+        <section class="docs-index__section">
+          <h2>{section}</h2>
+          <ul>
+            {items.map((doc) => (
+              <li>
+                <a href={`/docs/${doc.id}`}>
+                  <span class="docs-index__title">{doc.data.title}</span>
+                  <span class="docs-index__desc">{doc.data.description}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+</MarketingLayout>
+
+<style>
+  .docs-index {
+    display: grid;
+    gap: var(--space-2xl);
+    padding-block: var(--space-2xl) var(--space-3xl);
+  }
+
+  .docs-index__hero {
+    max-width: 40rem;
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .docs-index__hero h1 {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: clamp(2.25rem, 4vw, 3.25rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .docs-index__hero p {
+    margin: 0;
+    color: var(--muted-foreground);
+    line-height: 1.65;
+  }
+
+  .docs-index__section {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .docs-index__section h2 {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  .docs-index__section ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .docs-index__section a {
+    display: grid;
+    gap: 0.25rem;
+    padding: 1rem 1.15rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--card);
+    text-decoration: none;
+  }
+
+  .docs-index__section a:hover {
+    border-color: var(--muted-foreground);
+  }
+
+  .docs-index__title {
+    color: var(--foreground);
+    font-weight: 600;
+  }
+
+  .docs-index__desc {
+    color: var(--muted-foreground);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+</style>

@@ -1,16 +1,30 @@
 ---
-const appUrl = (import.meta.env.PUBLIC_APP_URL || 'http://localhost:8080').replace(/\/$/, '');
+import { getSiteConfig } from '../../lib/site';
+
+const { appReady, primaryCtaHref, primaryCtaLabel } = getSiteConfig();
 ---
 
 <section class="get-started">
   <div class="get-started__inner container">
     <div class="get-started__card">
-      <p class="get-started__eyebrow">Get started</p>
-      <h2 class="get-started__title">Curated videos, purposeful learning.</h2>
+      <p class="get-started__eyebrow">{appReady ? 'Get started' : 'Coming soon'}</p>
+      <h2 class="get-started__title">
+        {appReady ? 'Curated videos, purposeful learning.' : "We're building YTSchool."}
+      </h2>
       <p class="get-started__lead">
-        Learn from the world&apos;s best YouTube teachers — then build something further.
+        {
+          appReady ? (
+            <>
+              Learn from the world&apos;s best YouTube teachers — then build something further.
+            </>
+          ) : (
+            <>We&apos;re inviting early learners first — reserve your spot with Gmail.</>
+          )
+        }
       </p>
-      <a href={`${appUrl}/login`} class="get-started__button">Start learning — it&apos;s free</a>
+      <a href={primaryCtaHref} class="get-started__button">
+        {appReady ? "Start learning — it's free" : 'Get early access'}
+      </a>
     </div>
   </div>
 </section>

@@ -1,33 +1,28 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
-  MASTERY_PRICING,
   PLAN_FEATURES,
   PLAN_FEATURE_INCLUSION,
+  getMasteryPricingForRegion,
   getYearlySavings,
   type Cadence,
   type PlanId,
 } from '../../data/plans';
 
-declare global {
-  interface Window {
-    Razorpay?: new (options: Record<string, unknown>) => { open: () => void };
+function detectIsIndia() {
+  if (typeof window === 'undefined') return true;
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    if (tz === 'Asia/Kolkata' || tz === 'Asia/Calcutta') return true;
+    const langs = [navigator.language, ...(navigator.languages || [])]
+      .filter(Boolean)
+      .map((l) => l.toLowerCase());
+    if (langs.some((l) => l === 'hi-in' || l.endsWith('-in'))) return true;
+  } catch {
+    /* ignore */
   }
-}
-
-function loadRazorpayScript(): Promise<boolean> {
-  return new Promise((resolve) => {
-    if (window.Razorpay) {
-      resolve(true);
-      return;
-    }
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    script.onload = () => resolve(true);
-    script.onerror = () => resolve(false);
-    document.body.appendChild(script);
-  });
+  return false;
 }
 
 function PlanCard({
@@ -43,8 +38,6 @@ function PlanCard({
   ctaLabel,
   ctaVariant = 'default',
   onCta,
-  ctaLoading,
-  ctaDisabled,
 }: {
   planId: PlanId;
   title: string;
@@ -58,12 +51,16 @@ function PlanCard({
   ctaLabel: string;
   ctaVariant?: 'default' | 'outline';
   onCta?: () => void;
-  ctaLoading?: boolean;
-  ctaDisabled?: boolean;
 }) {
   const included = PLAN_FEATURE_INCLUSION[planId];
+  const viewerIncluded = PLAN_FEATURE_INCLUSION.viewer;
   const visible = onlyIncluded
-    ? PLAN_FEATURES.filter((f) => included.has(f.id))
+    ? PLAN_FEATURES.filter((f) => {
+        if (!included.has(f.id)) return false;
+        // Mastery lists only extras beyond Viewer ("Everything in Viewer, plus:")
+        if (planId === 'mastery') return !viewerIncluded.has(f.id);
+        return true;
+      })
     : PLAN_FEATURES;
 
   return (
@@ -82,7 +79,7 @@ function PlanCard({
       <div className="mt-5">{priceNode}</div>
       <p className="mt-3 text-sm text-muted-foreground">{description}</p>
       {featuresIntro ? (
-        <p className="mt-5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <p className="mt-6 text-sm font-semibold tracking-wide text-foreground">
           {featuresIntro}
         </p>
       ) : null}
@@ -96,52 +93,53 @@ function PlanCard({
       </ul>
       <button
         type="button"
-        disabled={ctaDisabled || ctaLoading}
         onClick={onCta}
-        className={`mt-6 inline-flex h-11 items-center justify-center rounded-full px-4 text-sm font-semibold transition-opacity disabled:opacity-60 ${
+        className={`mt-6 inline-flex h-11 items-center justify-center rounded-full px-4 text-sm font-semibold transition-opacity ${
           ctaVariant === 'outline'
             ? 'border border-border bg-background text-foreground hover:bg-muted'
             : 'bg-primary text-primary-foreground hover:opacity-90'
         }`}
       >
-        {ctaLoading ? 'Processing…' : ctaLabel}
+        {ctaLabel}
       </button>
     </article>
   );
 }
 
 export function PricingSection({
-  appUrl,
-  homeApiUrl,
-  razorpayKeyId,
-  enableCheckout = false,
+  appReady,
+  viewerHref,
+  masteryHref,
+  waitlistHref,
 }: {
-  appUrl: string;
-  homeApiUrl: string;
-  razorpayKeyId: string;
-  enableCheckout?: boolean;
+  appReady: boolean;
+  viewerHref: string;
+  masteryHref: string;
+  waitlistHref: string;
 }) {
   const [cadence, setCadence] = useState<Cadence>('yearly');
-  const [email, setEmail] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const savings = useMemo(() => getYearlySavings(MASTERY_PRICING), []);
-  const { currencySymbol, monthly, yearly } = MASTERY_PRICING;
+  const [isIndia, setIsIndia] = useState(true);
+
+  useEffect(() => {
+    setIsIndia(detectIsIndia());
+  }, []);
+
+  const pricing = useMemo(() => getMasteryPricingForRegion(isIndia), [isIndia]);
+  const savings = useMemo(() => getYearlySavings(pricing), [pricing]);
+  const { currencySymbol, monthly, yearly } = pricing;
 
   const masteryPriceNode =
     cadence === 'yearly' ? (
-      <div>
-        <div className="text-sm text-muted-foreground line-through">
+      <div className="flex items-baseline gap-2">
+        <span className="text-4xl font-bold tracking-tight text-foreground">
+          {currencySymbol}
+          {yearly}
+        </span>
+        <span className="text-sm text-muted-foreground">/yr</span>
+        <span className="text-sm text-muted-foreground line-through">
           {currencySymbol}
           {savings.monthlyTotal}
-        </div>
-        <div className="flex items-baseline gap-1">
-          <span className="text-4xl font-bold tracking-tight text-foreground">
-            {currencySymbol}
-            {yearly}
-          </span>
-          <span className="text-sm text-muted-foreground">/yr</span>
-        </div>
+        </span>
       </div>
     ) : (
       <div className="flex items-baseline gap-1">
@@ -153,71 +151,14 @@ export function PricingSection({
       </div>
     );
 
-  const startCheckout = async () => {
-    setError(null);
-    const trimmed = email.trim().toLowerCase();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-      setError('Enter a valid email so we can link your Mastery plan.');
-      return;
-    }
-    if (!enableCheckout) {
-      window.location.href = `${appUrl}/login?next=/billing&upgrade=mastery&cadence=${cadence}`;
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const res = await fetch(`${homeApiUrl.replace(/\/$/, '')}/v1/checkout/orders`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: trimmed,
-          planId: 'mastery',
-          cadence,
-        }),
-      });
-      if (!res.ok) {
-        const body = (await res.json().catch(() => null)) as { message?: string } | null;
-        throw new Error(body?.message || 'Could not start checkout.');
-      }
-      const order = (await res.json()) as {
-        orderId: string;
-        amount: number;
-        currency: string;
-        keyId: string;
-        email: string;
-      };
-
-      const ok = await loadRazorpayScript();
-      if (!ok || !window.Razorpay) {
-        throw new Error('Razorpay failed to load. Please try again.');
-      }
-
-      const rzp = new window.Razorpay({
-        key: order.keyId || razorpayKeyId,
-        amount: order.amount,
-        currency: order.currency,
-        name: 'YTSchool',
-        description: `Mastery (${cadence})`,
-        order_id: order.orderId,
-        prefill: { email: order.email },
-        theme: { color: '#1a1a1a' },
-        handler: () => {
-          window.location.href = `/checkout/success?order_id=${encodeURIComponent(order.orderId)}`;
-        },
-        modal: {
-          ondismiss: () => {
-            window.location.href = '/checkout/cancel';
-          },
-        },
-      });
-      rzp.open();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Checkout failed.');
-    } finally {
-      setLoading(false);
-    }
+  const go = (href: string) => {
+    window.location.href = href;
   };
+
+  const freeCtaHref = appReady ? viewerHref : waitlistHref;
+  const masteryCtaHref = appReady
+    ? `${masteryHref}${masteryHref.includes('?') ? '&' : '?'}cadence=${cadence}`
+    : waitlistHref;
 
   return (
     <section id="pricing" className="border-t border-border bg-background py-24">
@@ -259,23 +200,6 @@ export function PricingSection({
               yearly billing
             </span>
           </div>
-
-          {enableCheckout ? (
-            <div className="mx-auto mt-6 max-w-md text-left">
-              <label htmlFor="checkout-email" className="text-sm font-medium text-foreground">
-                Email for Mastery checkout
-              </label>
-              <input
-                id="checkout-email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                className="mt-2 w-full rounded-full border border-border bg-background px-4 py-2 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring"
-              />
-              {error ? <p className="mt-2 text-sm text-destructive">{error}</p> : null}
-            </div>
-          ) : null}
         </div>
 
         <div className="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-2">
@@ -292,16 +216,17 @@ export function PricingSection({
               </div>
             }
             description="Watch YouTube videos for free. Perfect for casual learners exploring the platform."
-            ctaLabel="Get started free"
+            onlyIncluded
+            ctaLabel={appReady ? 'Get started free' : 'Get notified'}
             ctaVariant="outline"
-            onCta={() => {
-              window.location.href = `${appUrl}/login?next=/my-learning`;
-            }}
+            onCta={() => go(freeCtaHref)}
           />
           <PlanCard
             planId="mastery"
             title="Mastery"
-            tagline="Full Access for a Year"
+            tagline={
+              cadence === 'yearly' ? 'Full Access for a Year' : 'Full Access for a Month'
+            }
             priceNode={masteryPriceNode}
             description="Comprehensive long-term learning. Ideal for professional growth and mastery."
             featured
@@ -319,11 +244,8 @@ export function PricingSection({
             }
             featuresIntro="Everything in Viewer, plus:"
             onlyIncluded
-            ctaLabel="Subscribe to Mastery"
-            ctaLoading={loading}
-            onCta={() => {
-              void startCheckout();
-            }}
+            ctaLabel={appReady ? 'Subscribe to Mastery' : 'Reserve early access'}
+            onCta={() => go(masteryCtaHref)}
           />
         </div>
       </div>
